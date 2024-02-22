@@ -2,6 +2,7 @@ import Foundation
 
 func prettyPrint(_ codable: some Encodable) {
     let encoder = JSONEncoder()
+    encoder.keyEncodingStrategy = .convertToSnakeCase
     encoder.outputFormatting = .prettyPrinted
     do {
         try print(
