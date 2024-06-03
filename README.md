@@ -2,17 +2,22 @@
 
 [![build](https://github.com/dankinsoid/VaporToOpenAPI/actions/workflows/test.yml/badge.svg)](https://github.com/dankinsoid/VaporToOpenAPI/actions/workflows/test.yml)
 
-VaporToOpenAPI is a Swift library which can generate output compatible with [OpenAPI version 3.0.1](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md) from Vapor code. You can use generated file in [Swagger UI](https://swagger.io/swagger-ui/).\
+VaporToOpenAPI is a Swift library which can generate output compatible with [OpenAPI version 3.0.1](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md) from Vapor code. You can use generated file in [Swagger UI](https://swagger.io/swagger-ui/) or [Stoplight](https://stoplight.io).\
 The library is based on [SwiftOpenAPI](https://github.com/dankinsoid/SwiftOpenAPI).
 
 ## Usage
-### Base usage
+
+### [Stoplight](https://stoplight.io) setup
+1. Describe all of your routes and register all controllers as described in [Vapor docs](https://docs.vapor.codes/basics/routing). Add OpenAPI details to each route using the `route.openAPI` method.
+2. Add a route  via the `routes.stoplightDocumentation` to return an `OpenAPIObject` instance via the `routes.openAPI` method.
+
+### [Swagger](https://swagger.io) setup
 1. Set up a [SwaggerUI page](https://github.com/swagger-api/swagger-ui) in your Vapor project downloading the `dist` folder and placing its content in the `Public/Swagger` directory.
 2. Describe all of your routes and register all controllers as described in [Vapor docs](https://docs.vapor.codes/basics/routing). Add OpenAPI details to each route using the `route.openAPI` method.
 3. Add a route to return a [SwaggerUI index.html](https://github.com/swagger-api/swagger-ui/blob/master/dist/index.html). Or configure your middlewares to use 'index.html' as default page.
 4. Add a route to return an `OpenAPIObject` instance via the `app.routes.openAPI` method. Make sure the path of this route matches the `swagger.json` URL in your SwaggerUI page method.
 
-All enums in your models must implement `CaseIterable`.
+⚠️ All enums in your models must implement `CaseIterable`.
 
 ### Advanced Usage
 VaporToOpenAPI includes several advanced features that allow you to customize the generated OpenAPI documentation in various ways. Some of these features include:
@@ -60,16 +65,18 @@ let routes = app.routes.groupedOpenAPI(auth: .apiKey())
 - `openAPINoAuth`: This method is used to specify that an operation does not require any authentication.
    
 - `openAPI(custom:)`: These methods are used to customize a specific aspect of the OpenAPI metadata for a Vapor route, such as a specific security scheme or callback.
-   
+
+- `stoplightDocumentation(openAPI:)`: These methods are used to generate a [Stoplight documentation](https://stoplight.io/) from your Vapor routes.
+
 - `operationID` and `operationRef`: These properties are used to generate unique identifiers for OpenAPI operations and to create references to them in other parts of the specification.
 
 #### Customizing OpenAPI schemas and parameters
 You can customize OpenAPI schemas and parameters result by implementing `OpenAPIDescriptable` and `OpenAPIType` protocols.
-1. `OpenAPIDescriptable` protocol allows you to provide a custom description for the type and its properties. `@OpenAPIAutoDescriptable` macro implements this protocol with your comments.
+1. `OpenAPIDescriptable` protocol allows you to provide a custom description for the type and its properties. `@OpenAPIDescriptable` macro implements this protocol with your comments.
 ```swift
 import SwiftOpenAPI
 
-@OpenAPIAutoDescriptable
+@OpenAPIDescriptable
 /// Login request body.
 struct LoginBody: Codable {
     
@@ -211,7 +218,7 @@ import PackageDescription
 let package = Package(
   name: "SomeProject",
   dependencies: [
-    .package(url: "https://github.com/dankinsoid/VaporToOpenAPI.git", from: "4.4.6")
+    .package(url: "https://github.com/dankinsoid/VaporToOpenAPI.git", from: "4.6.6")
   ],
   targets: [
     .target(name: "SomeProject", dependencies: ["VaporToOpenAPI"])

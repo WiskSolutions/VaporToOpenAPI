@@ -3,16 +3,16 @@ import SwiftOpenAPI
 import VaporToOpenAPI
 
 /// Address
-@OpenAPIAutoDescriptable
+@OpenAPIDescriptable
 public struct Address: Codable, WithExample {
 
-    /// Street address
+	/// Street address
 	public var street: String?
-    /// City name
+	/// City name
 	public var city: String?
-    /// State name
+	/// State name
 	public var state: String?
-    /// Zip code
+	/// Zip code
 	public var zip: String?
 
 	public static let example = Address(
